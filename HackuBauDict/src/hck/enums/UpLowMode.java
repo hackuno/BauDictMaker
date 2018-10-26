@@ -27,6 +27,16 @@ public enum UpLowMode {
 		}
 		return null;
 	}
+	
+	public static UpLowMode getFromValue(String val) {
+		int value = Integer.valueOf(val);
+		for (UpLowMode mode : values()) {
+			if (mode.getValue() == value) {
+				return mode;
+			}
+		}
+		return null;
+	}
 
 	public String getDescr() {
 		return descr;

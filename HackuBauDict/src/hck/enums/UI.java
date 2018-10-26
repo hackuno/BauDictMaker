@@ -209,26 +209,27 @@ public enum UI {
 			if (loc == LANG.IT) {
 				pl("COMANDI");
 				pl("\tstart > procedura guidata, il software ti guidera per imparare piu facilmente'.");
-				
-				pl("\t-upLow #: tipo di modalita' maiuscole/minuscole - default: NONE");
+				pl("\tbau > Esegue il software con i comandi seguenti'.");
+				pl("\tuplow=#: tipo di modalita' maiuscole/minuscole - default: NONE");
 				for (UpLowMode mode : UpLowMode.values()) {
 					pl("\t\t" + mode.getValue() + " = " + mode.toString() + "\t" + mode.getItaDescr());
 				}
-				pl("\t-junct #: tipo di modalita' giunzione/simboli - default: NONE");
+				pl("\tjunct=#: tipo di modalita' giunzione/simboli - default: NONE");
 				for (JunctionMode mode : JunctionMode.values()) {
 					pl("\t\t" + mode.getValue() + " = " + mode.toString() + "\t" + mode.getItaDescr());
 				}
-				pl("\t-card #: cardinalità desiderata - default: 1");
+				pl("\tcard=#: cardinalità desiderata - default: 1");
 				pl("\t\t1 = la parola in output sarà composta da 1 parola");
 				pl("\t\t2 = la parola in output sarà composta dall'unione di 2 parole");
 				pl("\t\t3 = la parola in output sarà composta dall'unione di 3 parole");
 				pl("\t\t4 = la parola in output sarà composta dall'unione di 4 parole");
 				pl("\t\t5 = la parola in output sarà composta dall'unione di 5 parole");
-				pl("\t-sp PATH: path al file contenente i simboli da utilizzare");
-				pl("\t-bp PATH: path alla cartella contenente i file che verranno presi come input di blocchi di parole (ogni file e' considerato un blocco a se stante)");
+				pl("\tsym-file=PATH: path al file contenente i simboli da utilizzare");
+				pl("\ttest-word=parola : per testare il software e verificare che trovi una certa parola.");
+				pl("\tblocks-dir=PATH: path alla cartella contenente i file che verranno presi come input di blocchi di parole (ogni file e' considerato un blocco a se stante)");
 				pl("");
 				pl("\tExample");
-				pl("\t\tbau -upLow 1 -junct 3 -card 3 -sp /path/to/symbols/file.txt -bp /path/to/blocks/files/folder/");
+				pl("\t\tbau uplow=1 junct=3 card=3 sym-file=/path/to/symbols/file.txt blocks-dir=/path/to/blocks/files/folder/ test-word=parolaDaTestare");
 				pl("");
 			} else {
 				pl("COMANDI");

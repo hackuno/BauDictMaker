@@ -1,5 +1,8 @@
 package hck;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,9 +30,98 @@ public class BauDictMaker {
 
 			if (args[0].equals("start")) {
 				newbyMode();
+			} else if (args[0].equals("bau")) {
+				cmd(args);
 			}
 		}
 
+	}
+
+	private static void cmd(String[] args) {
+
+		UpLowMode ul = UpLowMode.NONE;
+		JunctionMode j = JunctionMode.NONE;
+		File symbols = null;
+		File blocks = null;
+		int cardinality = 1;
+		String test = null;
+
+		for (String a : args) {
+			try {
+				String[] cmd = a.split("=");
+				if (cmd.length == 2) {
+					switch (cmd[0]) {
+					case "uplow": {
+						ul=UpLowMode.getFromValue(cmd[1]);
+						break;
+					}
+					case "junct": {
+						j=JunctionMode.getFromValue(cmd[1]);
+						break;
+					}
+					case "card": {
+						cardinality = Integer.valueOf(cmd[1]);
+						break;
+					}
+					case "sym-file": {
+						symbols = new File(cmd[1]);
+						break;
+					}
+					case "blocks-dir": {
+						blocks = new File(cmd[1]);
+						break;
+					}
+					case "test-word": {
+						test = cmd[1];
+						break;
+					}
+					}
+				}
+			} catch (Exception e) {
+				pl("Parametro non riconosciuto: " + a);
+			}
+		}
+		pl("UplowMode: " + ul.toString());
+		pl("JunctionMode: " + j.toString());
+		pl("Symbols File: " + symbols.getAbsolutePath());
+		pl("Blocks Directory: " + blocks.getAbsolutePath());
+		pl("Cardinality: " + cardinality);
+		pl("Test: " + test);
+
+		Set<String> sym = new HashSet<String>();
+		List<List<String>> lista = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(symbols));
+			String st;
+			while ((st = br.readLine()) != null) {
+				sym.add(st);
+			}
+			br.close();
+		}
+
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		for (File f : blocks.listFiles()) {
+			try {
+				List<String> block = new ArrayList<>();
+				BufferedReader br = new BufferedReader(new FileReader(f));
+				String st;
+				while ((st = br.readLine()) != null) {
+					block.add(st);
+				}
+				br.close();
+				lista.add(block);
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		launch(cardinality, ul, j, test, sym, lista);
 	}
 
 	private static void newbyMode() {
@@ -55,37 +147,44 @@ public class BauDictMaker {
 			}
 
 			String test = ask4Test(in);
-
-			shuffler = new Shuffler(sym);
-
-			switch (cardinality) {
-			case 1: {
-				shuffler.cardinality1(lista, ulMode, jMode, test, null);
-				break;
-			}
-			case 2: {
-				shuffler.cardinality2(lista, ulMode, jMode, test, null);
-				break;
-			}
-			case 3: {
-				shuffler.cardinality3(lista, ulMode, jMode, test, null);
-				break;
-			}
-			case 4: {
-				shuffler.cardinality4(lista, ulMode, jMode, test, null);
-				break;
-			}
-			case 5: {
-				shuffler.cardinality5(lista, ulMode, jMode, test, null);
-				break;
-			}
-			}
 			in.close();
+
+			launch(cardinality, ulMode, jMode, test, sym, lista);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (in != null) {
 				in.close();
 			}
+		}
+
+	}
+
+	private static void launch(int cardinality, UpLowMode ulMode, JunctionMode jMode, String test, Set<String> sym,
+			List<List<String>> lista) {
+
+		shuffler = new Shuffler(sym);
+
+		switch (cardinality) {
+		case 1: {
+			shuffler.cardinality1(lista, ulMode, jMode, test, null);
+			break;
+		}
+		case 2: {
+			shuffler.cardinality2(lista, ulMode, jMode, test, null);
+			break;
+		}
+		case 3: {
+			shuffler.cardinality3(lista, ulMode, jMode, test, null);
+			break;
+		}
+		case 4: {
+			shuffler.cardinality4(lista, ulMode, jMode, test, null);
+			break;
+		}
+		case 5: {
+			shuffler.cardinality5(lista, ulMode, jMode, test, null);
+			break;
+		}
 		}
 
 	}
@@ -181,7 +280,7 @@ public class BauDictMaker {
 	}
 
 	private static int ask4BlockNumbers(Scanner in, int min) {
-		UI.ASK_4BLOCKS_NUMBER.print(loc,min+"");
+		UI.ASK_4BLOCKS_NUMBER.print(loc, min + "");
 		int blocks = in.nextInt();
 		if (blocks < min) {
 			UI.INVALID_INPUT.print(loc);
