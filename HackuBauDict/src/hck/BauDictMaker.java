@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import hck.enums.JunctionMode;
-import hck.enums.LOC;
+import hck.enums.LANG;
 import hck.enums.UI;
 import hck.enums.UpLowMode;
 import hck.services.Shuffler;
@@ -16,12 +16,12 @@ public class BauDictMaker {
 
 	public static Shuffler shuffler = null;
 
-	public static LOC loc = LOC.IT;
+	public static LANG loc = LANG.IT;
 
 	public static void main(String[] args) {
 
 		if (args.length == 0) {
-			printManual();
+			UI.MANUAL.print(loc);
 			System.exit(0);
 		} else {
 
@@ -102,12 +102,12 @@ public class BauDictMaker {
 		return sym;
 	}
 
-	private static LOC ask4Language(Scanner in) {
+	private static LANG ask4Language(Scanner in) {
 		UI.ASK_4LANGUAGE.print(loc);
 
 		int lang = in.nextInt();
 		in.nextLine();
-		LOC language = LOC.getFromValue(lang);
+		LANG language = LANG.getFromValue(lang);
 		if (language == null) {
 			UI.INVALID_INPUT.print(loc);
 			return ask4Language(in);
