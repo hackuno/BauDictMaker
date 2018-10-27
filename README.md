@@ -6,4 +6,4 @@ N.B: This software is under development but it will be completed very soon! In a
 N.N.B. the "single line" mode is not ready yet so you will not able to
 pass the output to other software / file
 
-http://www.hackubau.it/BauDictMaker.html
+http://www.hackubau.it/HackuBauDictionary
