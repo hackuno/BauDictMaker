@@ -13,8 +13,9 @@ import hck.HackuBauDict;
 
 public class PropertiesLoader {
 
-	private static final String CFG_PATH = File.separator + "cfg" + File.separator + "hck_default.properties";
-	private static final String CFG_PATH_PRIMARY = "cfg" + File.separator + "hck_default.properties";
+	private static final String slash = System.getProperties().get("file.separator").toString();
+	private static final String CFG_PATH = slash + "cfg" + slash + "hck_default.properties";
+	private static final String CFG_PATH_PRIMARY = "cfg" + slash + "hck_default.properties";
 
 	public static Properties load() {
 		Properties prop = null;
