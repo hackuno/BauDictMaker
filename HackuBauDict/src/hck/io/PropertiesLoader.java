@@ -13,21 +13,22 @@ import hck.HackuBauDict;
 
 public class PropertiesLoader {
 
-	private static final String CFG_PATH = "\\cfg\\hck_default.properties";
-	private static final String CFG_PATH_PRIMARY = "cfg\\hck_default.properties";
+	private static final String CFG_PATH = File.separator + "cfg" + File.separator + "hck_default.properties";
+	private static final String CFG_PATH_PRIMARY = "cfg" + File.separator + "hck_default.properties";
 
 	public static Properties load() {
 		Properties prop = null;
 		InputStream input = null;
 		Path path = getInstallationPath();
+
 		if (path != null) {
 			try {
 
 				System.out.print("Serching default properties in: " + CFG_PATH_PRIMARY);
 				File f = new File(CFG_PATH_PRIMARY);
-				System.out.println(" ("+f.getAbsolutePath()+")");
+				System.out.println(" (" + f.getAbsolutePath() + ")");
 				if (f.exists()) {
-					System.out.println("Loading default properties from: " +f.getAbsolutePath());
+					System.out.println("Loading default properties from: " + f.getAbsolutePath());
 					prop = new Properties();
 					input = new FileInputStream(f);
 					prop.load(input);
