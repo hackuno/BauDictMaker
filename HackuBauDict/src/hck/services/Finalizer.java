@@ -1,26 +1,26 @@
 package hck.services;
 
-import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import hck.utils.Utils;
 
 public class Finalizer {
 
-	public Set<String> ctrl = null;
+	public ConcurrentSkipListSet<String> ctrl = null;
 
 	public Finalizer() {
 	}
 
-	public Finalizer(Set<String> ctrl) {
+	public Finalizer(ConcurrentSkipListSet<String> ctrl) {
 		this.ctrl = ctrl;
 	}
 
-	public synchronized void finalize(String s) {
-		
+	public void finalize(String s) {
+
 		if (ctrl != null) {
 			ctrl.remove(s);
-		}
-		else
-		{
-			System.out.println(s);
+		} else {
+			Utils.pl(s);
 		}
 
 	}

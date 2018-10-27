@@ -62,7 +62,6 @@ public class Metamorpher {
 			upperLower_ALL_COMBO(strUp, cycle, rez);
 		} else {
 			rez.add(str.toString());
-			// System.out.println(str.toString());
 		}
 	}
 

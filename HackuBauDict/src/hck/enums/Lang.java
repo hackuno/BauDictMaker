@@ -1,13 +1,13 @@
 package hck.enums;
 
-public enum LANG {
+public enum Lang {
 
 	IT(1, "Italiano"), EN(2, "English");
 
 	private int value;
 	private String descr;
 
-	LANG(int value, String descr) {
+	Lang(int value, String descr) {
 		this.value = value;
 		this.descr = descr;
 	}
@@ -20,9 +20,18 @@ public enum LANG {
 		this.value = value;
 	}
 
-	public static LANG getFromValue(int value) {
-		for (LANG mode : values()) {
+	public static Lang getFromValue(int value) {
+		for (Lang mode : values()) {
 			if (mode.getValue() == value) {
+				return mode;
+			}
+		}
+		return null;
+	}
+
+	public static Lang getFromValue(String val) {
+		for (Lang mode : values()) {
+			if (mode.getDescr().equals(val) || mode.toString().equals(val)) {
 				return mode;
 			}
 		}

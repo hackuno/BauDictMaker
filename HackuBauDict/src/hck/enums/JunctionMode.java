@@ -36,11 +36,15 @@ public enum JunctionMode {
 	}
 
 	public static JunctionMode getFromValue(String val) {
-		int value = Integer.valueOf(val);
-		for (JunctionMode mode : values()) {
-			if (mode.getValue() == value) {
-				return mode;
+		try {
+			int value = Integer.valueOf(val);
+			for (JunctionMode mode : values()) {
+				if (mode.getValue() == value) {
+					return mode;
+				}
 			}
+		} catch (Exception e) {
+
 		}
 		return null;
 	}

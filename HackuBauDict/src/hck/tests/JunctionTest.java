@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import hck.enums.JunctionMode;
 import hck.services.Junction;
+import hck.utils.Utils;
 
 @RunWith(JUnitPlatform.class)
 class JunctionTest {
@@ -21,7 +22,6 @@ class JunctionTest {
 
 	@BeforeAll
 	public static void setup() {
-		System.out.println("Junction Test");
 		j = new Junction();
 		sym = new HashSet<String>();
 		sym.add("%");
@@ -31,7 +31,7 @@ class JunctionTest {
 
 	@Test
 	void ALL_JUNCTION__2w() {
-
+		Utils.plTs("Junction test ALL_JUNCTION 2W - init ");
 		Set<String> out = new HashSet<String>();
 		out.add("%casa%bau%");
 		out.add("%casa%bau_");
@@ -41,11 +41,14 @@ class JunctionTest {
 		out.add("%casa_bau_");
 		out.add("_casa_bau%");
 		out.add("_casa_bau_");
+		Junction.junction(JunctionMode.ALL_JUNCTION, sym, "casa", "bau").forEach(out::remove);
+		assertTrue(out.size() == 0);
+		Utils.plTs("Junction test ALL_JUNCTION 2W - Succeeded ");
 	}
 
 	@Test
 	void ALL_JUNCTION__3w() {
-
+		Utils.plTs("Junction test ALL_JUNCTION 3W - init ");
 		Set<String> out = new HashSet<String>();
 		out.add("_casa%bau%miao%");
 		out.add("_casa%bau%miao_");
@@ -66,6 +69,7 @@ class JunctionTest {
 
 		Junction.junction(JunctionMode.ALL_JUNCTION, sym, "casa", "bau", "miao").forEach(out::remove);
 		assertTrue(out.size() == 0);
+		Utils.plTs("Junction test ALL_JUNCTION 3W - Succeeded ");
 	}
 
 }

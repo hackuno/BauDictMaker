@@ -3,6 +3,7 @@ package hck.services;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.platform.commons.util.StringUtils;
 
@@ -34,13 +35,16 @@ public class Shuffler {
 	}
 
 	public void cardinality1(List<List<String>> listona, UpLowMode ulMode, JunctionMode jMode, String testFindMe,
-			Set<String> ctrl) {
+			ConcurrentSkipListSet<String> ctrl) {
 
 		Finalizer F = new Finalizer(ctrl);
 
 		for (List<String> blk1 : listona) {
 			blk1.parallelStream().flatMap(f -> m.upperLower(f, ulMode)).flatMap(x -> Junction.junction(jMode, sym, x))
-					.filter(y -> StringUtils.isBlank(testFindMe) ? true : y.equals(testFindMe)).forEach(F::finalize);
+					.filter(y -> StringUtils.isBlank(testFindMe) ? true : y.equals(testFindMe)).forEach(r -> {
+						F.finalize(r);
+
+					});
 		}
 
 	}
@@ -50,7 +54,7 @@ public class Shuffler {
 	}
 
 	public void cardinality2(List<List<String>> listona, UpLowMode ulMode, JunctionMode jMode, String testFindMe,
-			Set<String> ctrl) {
+			ConcurrentSkipListSet<String> ctrl) {
 
 		Finalizer F = new Finalizer(ctrl);
 
@@ -60,11 +64,12 @@ public class Shuffler {
 			int ii = 0;
 			for (List<String> blk2 : listona) {
 				if (i != ii) {
-					blk2.parallelStream().flatMap(f -> m.upperLower(f, ulMode))
-							.forEach(y -> blk1.parallelStream().flatMap(f -> m.upperLower(f, ulMode))
-									.flatMap(x -> Junction.junction(jMode, sym, x, y))
-									.filter(x -> StringUtils.isBlank(testFindMe) ? true : x.equals(testFindMe))
-									.forEach(F::finalize));
+					blk2.parallelStream().flatMap(f -> m.upperLower(f, ulMode)).forEach(y -> blk1.parallelStream()
+							.flatMap(f -> m.upperLower(f, ulMode)).flatMap(x -> Junction.junction(jMode, sym, x, y))
+							.filter(x -> StringUtils.isBlank(testFindMe) ? true : x.equals(testFindMe)).forEach(r -> {
+								F.finalize(r);
+
+							}));
 				}
 				ii++;
 			}
@@ -78,7 +83,7 @@ public class Shuffler {
 	}
 
 	public void cardinality3(List<List<String>> listona, UpLowMode ulMode, JunctionMode jMode, String testFindMe,
-			Set<String> ctrl) {
+			ConcurrentSkipListSet<String> ctrl) {
 
 		Finalizer F = new Finalizer(ctrl);
 
@@ -96,7 +101,10 @@ public class Shuffler {
 									.forEach(y -> blk1.parallelStream().flatMap(f -> m.upperLower(f, ulMode))
 											.flatMap(x -> Junction.junction(jMode, sym, x, y, z))
 											.filter(x -> StringUtils.isBlank(testFindMe) ? true : x.equals(testFindMe))
-											.forEach(F::finalize)));
+											.forEach(r -> {
+												F.finalize(r);
+
+											})));
 
 						}
 						aaa++;
@@ -117,7 +125,7 @@ public class Shuffler {
 	}
 
 	public void cardinality4(List<List<String>> listona, UpLowMode ulMode, JunctionMode jMode, String testFindMe,
-			Set<String> ctrl) {
+			ConcurrentSkipListSet<String> ctrl) {
 
 		Finalizer F = new Finalizer(ctrl);
 
@@ -141,7 +149,10 @@ public class Shuffler {
 															.flatMap(x -> Junction.junction(jMode, sym, x, y, z, q))
 															.filter(x -> StringUtils.isBlank(testFindMe) ? true
 																	: x.equals(testFindMe))
-															.forEach(F::finalize))));
+															.forEach(r -> {
+																F.finalize(r);
+
+															}))));
 								}
 								aaaa++;
 							}
@@ -165,7 +176,7 @@ public class Shuffler {
 	}
 
 	public void cardinality5(List<List<String>> listona, UpLowMode ulMode, JunctionMode jMode, String testFindMe,
-			Set<String> ctrl) {
+			ConcurrentSkipListSet<String> ctrl) {
 
 		Finalizer F = new Finalizer(ctrl);
 
@@ -201,7 +212,10 @@ public class Shuffler {
 																									? true
 																									: x.equals(
 																											testFindMe))
-																					.forEach(F::finalize)))));
+																					.forEach(rx -> {
+																						F.finalize(rx);
+
+																					})))));
 										}
 										aaaaa++;
 									}

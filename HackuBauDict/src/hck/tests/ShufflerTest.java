@@ -3,9 +3,8 @@ package hck.tests;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.junit.runner.RunWith;
 import hck.enums.JunctionMode;
 import hck.enums.UpLowMode;
 import hck.services.Shuffler;
+import hck.utils.Utils;
 
 @RunWith(JUnitPlatform.class)
 class ShufflerTest {
@@ -23,7 +23,6 @@ class ShufflerTest {
 
 	@BeforeAll
 	public static void setup() {
-		System.out.println("Shuffler test");
 		String symbols = ".,";
 		s = new Shuffler(symbols.split(""));
 
@@ -31,55 +30,54 @@ class ShufflerTest {
 
 	@Test
 	public void cardinality1() {
-		System.out.println("Cardinality1 test - init");
-		Set<String> out = card1Ctrl();
+		Utils.plTs("Cardinality1 test - init ");
+		ConcurrentSkipListSet<String> out = card1Ctrl();
 		s.cardinality1(card1List(), UpLowMode.ALL_COMBO, JunctionMode.ALL_JUNCTION_1X2XCORNERS, null, out);
-		assertTrue(out.size()==0);
-		System.out.println("Cardinality1 test - Succeeded");
+		assertTrue(out.size() == 0);
+		Utils.plTs("Cardinality1 test - Succeeded ");
 	}
 
 	@Test
 	public void cardinality2() {
-		System.out.println("Cardinality2 test - init");
-		Set<String> out = card2Ctrl();
+		Utils.plTs("Cardinality2 test - init ");
+		ConcurrentSkipListSet<String> out = card2Ctrl();
 		s.cardinality2(card2List(), UpLowMode.NONE, JunctionMode.NONE, null, out);
 		assertTrue(out.size() == 0);
-		System.out.println("Cardinality2 test - Succeeded");
+		Utils.plTs("Cardinality2 test - Succeeded ");
 	}
 
 	@Test
 	public void cardinality3() {
-		System.out.println("Cardinality3 test - init");
-		Set<String> out = card3Ctrl();
+		Utils.plTs("Cardinality3 test - init ");
+		ConcurrentSkipListSet<String> out = card3Ctrl();
 		s.cardinality3(card3List(), UpLowMode.NONE, JunctionMode.NONE, null, out);
 		assertTrue(out.size() == 0);
-		System.out.println("Cardinality3 test - Succeeded");
+		Utils.plTs("Cardinality3 test - Succeeded ");
 
 	}
 
 	@Test
 	public void cardinality4() {
-		System.out.println("Cardinality4 test - init");
-		Set<String> out = card4Ctrl();
+		Utils.plTs("Cardinality4 test - init ");
+		ConcurrentSkipListSet<String> out = card4Ctrl();
 		s.cardinality4(card4List(), UpLowMode.NONE, JunctionMode.NONE, null, out);
 		assertTrue(out.size() == 0);
-		System.out.println("Cardinality4 test - Succeeded");
+		Utils.plTs("Cardinality4 test - Succeeded ");
 
 	}
 
 	@Test
 	public void cardinality5() {
-		System.out.println("Cardinality5 test - init");
-		Set<String> out = card5Ctrl();
+		Utils.plTs("Cardinality5 test - init ");
+		ConcurrentSkipListSet<String> out = card5Ctrl();
 		s.cardinality5(card5List(), UpLowMode.NONE, JunctionMode.NONE, null, out);
 		assertTrue(out.size() == 0);
-		System.out.println("Cardinality5 test - Succeeded");
-
+		Utils.plTs("Cardinality5 test - Succeeded ");
 	}
 
-	private Set<String> card1Ctrl() {
+	private ConcurrentSkipListSet<String> card1Ctrl() {
 
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<String>();
 		out.add("CiOppi");
 		out.add("BAU");
 		out.add("BAU,");
@@ -1392,9 +1390,9 @@ class ShufflerTest {
 
 	}
 
-	private Set<String> card2Ctrl() {
+	private ConcurrentSkipListSet<String> card2Ctrl() {
 
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<String>();
 		out.add("testcioppi");
 		out.add("testbau");
 		out.add("testcioppi");
@@ -1432,9 +1430,9 @@ class ShufflerTest {
 
 	}
 
-	private Set<String> card3Ctrl() {
+	private ConcurrentSkipListSet<String> card3Ctrl() {
 
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<String>();
 		out.add("testbaucioppi");
 		out.add("testcioppibau");
 		out.add("bautestcioppi");
@@ -1464,9 +1462,9 @@ class ShufflerTest {
 
 	}
 
-	private Set<String> card4Ctrl() {
+	private ConcurrentSkipListSet<String> card4Ctrl() {
 
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<String>();
 		out.add("testbaucioppianatroccolo");
 		out.add("testbaupiccioneanatroccolo");
 		out.add("testbauanatroccolopiccione");
@@ -1545,9 +1543,9 @@ class ShufflerTest {
 
 	}
 
-	private Set<String> card5Ctrl() {
+	private ConcurrentSkipListSet<String> card5Ctrl() {
 
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<String>();
 
 		out.add("testbaucioppipiccioneanatroccolo");
 		out.add("testbaucioppianatroccolopiccione");

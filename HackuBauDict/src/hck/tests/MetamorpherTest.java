@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import hck.enums.UpLowMode;
 import hck.services.Metamorpher;
+import hck.utils.Utils;
 
 @RunWith(JUnitPlatform.class)
 class MetamorpherTest {
@@ -20,12 +21,12 @@ class MetamorpherTest {
 
 	@BeforeAll
 	public static void setup() {
-		System.out.println("Metamorpher Tests");
 		m = new Metamorpher();
 	}
 
 	@Test
 	void upperLower() {
+		Utils.plTs("UpperLower test - init ");
 		Set<String> out = new HashSet<String>();
 		out.add("abcd");
 		out.add("abcD");
@@ -46,6 +47,7 @@ class MetamorpherTest {
 
 		m.upperLower("abcd", UpLowMode.ALL_COMBO).forEach(x -> out.remove(x));
 		assertTrue(out.size() == 0);
+		Utils.plTs("UpperLower test - Succeeded ");
 	}
 
 }
