@@ -1,17 +1,19 @@
 package hck.services;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import hck.enums.UpLowMode;
+import obj.Leet;
 
 public class Metamorpher {
 
-	// private boolean leet = false;
+	private Leet leetDict = null;
 
-	public Metamorpher(boolean leet) {
-		// this.leet = leet;
+	public Metamorpher(Leet leetDict) {
+		this.leetDict = leetDict;
 	}
 
 	public Metamorpher() {
@@ -57,7 +59,19 @@ public class Metamorpher {
 			String strNoup = s;
 			str.setCharAt(cycle, Character.toUpperCase(str.charAt(cycle)));
 			String strUp = str.toString();
+
+			if (leetDict!=null) {
+				List<String> variants = leetDict.getLeet(s.substring(cycle, cycle + 1));
+				if (variants != null && variants.size() > 0) {
+					for (String v : variants) {
+						String strLeet = s.substring(0, cycle) + v + s.substring(cycle + 1, s.length());
+						upperLower_ALL_COMBO(strLeet, cycle, rez);
+					}
+				}
+			}
+
 			cycle++;
+
 			upperLower_ALL_COMBO(strNoup, cycle, rez);
 			upperLower_ALL_COMBO(strUp, cycle, rez);
 		} else {
@@ -72,6 +86,17 @@ public class Metamorpher {
 
 		str.setCharAt(0, Character.toUpperCase(str.charAt(0)));
 		rez.add(str.toString());
+
+		if (leetDict!=null) {
+			List<String> variants = leetDict.getLeet(s.substring(0, 1));
+			if (variants != null && variants.size() > 0) {
+				for (String v : variants) {
+					String strLeet = s.substring(0, 0) + v + s.substring(1, s.length());
+					rez.add(strLeet.toString());
+				}
+			}
+		}
+
 	}
 
 	public void upperLower_LAST(String s, Set<String> rez) {
@@ -81,6 +106,16 @@ public class Metamorpher {
 
 		str.setCharAt(s.length() - 1, Character.toUpperCase(str.charAt(s.length() - 1)));
 		rez.add(str.toString());
+
+		if (leetDict!=null) {
+			List<String> variants = leetDict.getLeet(s.substring(s.length() - 1, s.length()));
+			if (variants != null && variants.size() > 0) {
+				for (String v : variants) {
+					String strLeet = s.substring(s.length() - 1, s.length()) + v;
+					rez.add(strLeet.toString());
+				}
+			}
+		}
 	}
 
 	public void upperLower_FIRST_LAST(String s, Set<String> rez) {
@@ -98,5 +133,23 @@ public class Metamorpher {
 
 		strLast.setCharAt(0, Character.toUpperCase(strLast.charAt(0)));
 		rez.add(strLast.toString());
+
+		if (leetDict!=null) {
+			List<String> variants = leetDict.getLeet(s.substring(0, 1));
+			if (variants != null && variants.size() > 0) {
+				for (String v : variants) {
+					String strLeet = s.substring(0, 0) + v + s.substring(1, s.length());
+					rez.add(strLeet.toString());
+				}
+			}
+			variants = leetDict.getLeet(s.substring(s.length() - 1, s.length()));
+			if (variants != null && variants.size() > 0) {
+				for (String v : variants) {
+					String strLeet = s.substring(s.length() - 1, s.length()) + v;
+					rez.add(strLeet.toString());
+				}
+			}
+		}
+
 	}
 }

@@ -16,11 +16,17 @@ public class PropertiesLoader {
 	private static final String slash = System.getProperties().get("file.separator").toString();
 	private static final String CFG_PATH = slash + "cfg" + slash + "hck_default.properties";
 	private static final String CFG_PATH_PRIMARY = "cfg" + slash + "hck_default.properties";
+	private static final String CFG_FROM_HERE_PATH_NO_SLASH = "cfg" + slash + "hck_default.properties";
+	private static final String CFG_FROM_HERE_PATH = "." + slash + "cfg" + slash + "hck_default.properties";
+	private static final String NIX_ETC = slash + "etc" + slash + "hck_default.properties";
+	private static final String NIX_USR_ETC = slash + "usr" + slash + "etc" + slash + "hck_default.properties";
 
 	public static Properties load() {
 		Properties prop = null;
 		InputStream input = null;
 		Path path = getInstallationPath();
+
+		String[] others = new String[] { CFG_FROM_HERE_PATH, CFG_FROM_HERE_PATH_NO_SLASH, NIX_ETC, NIX_USR_ETC };
 
 		if (path != null) {
 			try {
@@ -43,9 +49,23 @@ public class PropertiesLoader {
 						prop = new Properties();
 						input = new FileInputStream(f);
 						prop.load(input);
-						System.out.println("completed");
-					} else {
 						System.out.println("loaded");
+					} else {
+						System.out.println("Not found");
+						for (String p : others) {
+							System.out.println("Serching default properties in: " + p);
+							f = new File(p);
+							if (f.exists()) {
+								System.out.println("Loading default properties from:" + p);
+								prop = new Properties();
+								input = new FileInputStream(f);
+								prop.load(input);
+								System.out.println("loaded");
+							} else {
+								System.out.println("Not Found");
+							}
+
+						}
 					}
 				}
 

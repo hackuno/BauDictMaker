@@ -14,11 +14,14 @@ import org.junit.platform.commons.util.StringUtils;
 
 import hck.enums.JunctionMode;
 import hck.enums.Lang;
+import hck.enums.PreprocessorAdds;
 import hck.enums.UI;
 import hck.enums.UpLowMode;
 import hck.io.PropertiesLoader;
+import hck.services.Preprocessor;
 import hck.services.Shuffler;
 import hck.utils.Utils;
+import obj.Leet;
 
 public class Launcher {
 
@@ -31,13 +34,15 @@ public class Launcher {
 	private JunctionMode j = JunctionMode.NONE;
 	private File symbols = null;
 	private File blocks = null;
+	private Leet leetDict = null;
 	private int cardinality = 1;
 	private String test = null;
+	private List<PreprocessorAdds> preprocessors = null;
 
 	public void launch(String[] args) {
-		
+
 		loadDefaultProperties();
-		
+
 		if (args.length == 0) {
 			UI.MANUAL.print(loc);
 			System.exit(0);
@@ -71,7 +76,7 @@ public class Launcher {
 			Utils.pl("Exit program");
 			System.exit(0);
 		}
-		launch(cardinality, ul, j, test, sym, lista);
+		launch(cardinality, ul, j, test, sym, leetDict, lista);
 	}
 
 	private void loadDefaultProperties() {
@@ -81,9 +86,11 @@ public class Launcher {
 		j = JunctionMode.NONE;
 		symbols = null;
 		blocks = null;
+		leetDict = null;
 		cardinality = 1;
 		test = null;
 		loc = Lang.IT;
+		preprocessors = null;
 
 		if (props != null) {
 
@@ -103,6 +110,21 @@ public class Launcher {
 				if (ulProp != null) {
 					ul = ulProp;
 				}
+			}
+
+			Object preproc = props.get("preprocessors");
+			if (preproc != null && StringUtils.isNotBlank(preproc.toString())) {
+				preprocessors = new ArrayList<>();
+				String[] list = preproc.toString().split("#");
+				if (list.length > 0) {
+					for (String s : list) {
+						PreprocessorAdds pre = PreprocessorAdds.getFromValue(s.toString());
+						if (pre != null) {
+							preprocessors.add(pre);
+						}
+					}
+				}
+
 			}
 
 			Object crd = props.get("card");
@@ -142,6 +164,17 @@ public class Launcher {
 				}
 			}
 
+			Object leetF = props.get("leet-dict");
+			if (leetF != null && StringUtils.isNotBlank(leetF.toString())) {
+				try {
+					File f = new File(leetF.toString());
+					leetDict = new Leet(f);
+				} catch (Exception e) {
+					Utils.pl("File dizionario leet non trovato.");
+				}
+
+			}
+
 			Object blkF = props.get("blocks-dir");
 
 			if (blkF != null && StringUtils.isNotBlank(blkF.toString())) {
@@ -166,33 +199,64 @@ public class Launcher {
 			Utils.pl(a);
 			try {
 				String[] cmd = a.split("=");
-				if (cmd.length == 2) {
-					switch (cmd[0]) {
-					case "uplow": {
-						ul = UpLowMode.getFromValue(cmd[1]);
-						break;
+				if (cmd.length > 0) {
+					try {
+						switch (cmd[0]) {
+						case "uplow": {
+							ul = null;
+							ul = UpLowMode.getFromValue(cmd[1]);
+							break;
+						}
+						case "junct": {
+							j = null;
+							j = JunctionMode.getFromValue(cmd[1]);
+							break;
+						}
+						case "card": {
+							cardinality = -1;
+							cardinality = Integer.valueOf(cmd[1]);
+							break;
+						}
+						case "preproc": {
+							preprocessors = new ArrayList<>();
+							String[] list = cmd[1].split("#");
+							if (list.length > 0) {
+								for (String s : list) {
+									PreprocessorAdds pre = PreprocessorAdds.getFromValue(s.toString());
+									if (pre != null) {
+										preprocessors.add(pre);
+									}
+								}
+							}
+						}
+						case "sym-file": {
+							symbols = null;
+							symbols = new File(cmd[1]);
+							break;
+						}
+						case "blocks-dir": {
+							blocks = null;
+							blocks = new File(cmd[1]);
+							break;
+						}
+						case "leet-dict": {
+							leetDict = null;
+							File fl = new File(cmd[1]);
+							leetDict = new Leet(fl);
+							break;
+						}
+
+						case "test-word": {
+							test = null;
+							test = cmd[1];
+							break;
+						}
+						default:break;
+						}
+					} catch (Exception ee) {
+
 					}
-					case "junct": {
-						j = JunctionMode.getFromValue(cmd[1]);
-						break;
-					}
-					case "card": {
-						cardinality = Integer.valueOf(cmd[1]);
-						break;
-					}
-					case "sym-file": {
-						symbols = new File(cmd[1]);
-						break;
-					}
-					case "blocks-dir": {
-						blocks = new File(cmd[1]);
-						break;
-					}
-					case "test-word": {
-						test = cmd[1];
-						break;
-					}
-					}
+
 				}
 			} catch (Exception e) {
 				Utils.pl("Parametro non riconosciuto: " + a);
@@ -236,10 +300,21 @@ public class Launcher {
 			}
 		}
 
+		if (leetDict != null && !leetDict.isValid()) {
+			Utils.pl("Leet dictionary not builded");
+			leetDict = null;
+		}
+
 		Utils.pl("\n");
-		Utils.pl("Lang: " + loc.toString());
-		Utils.pl("UplowMode: " + ul.toString());
-		Utils.pl("JunctionMode: " + j.toString());
+		Utils.pl("Lang: " + loc != null ? loc.toString() : "");
+		Utils.pl("UplowMode: " + ul != null ? ul.toString() : "");
+		// Utils.pl("Preprocessors: " + preprocessors != null ? preprocessors.toString()
+		// : "");
+		Utils.pl("Leet: " );
+		// Utils.pl("LeetDcit: " + leetDict != null && leetDict.isValid() ?
+		// leetDict.getLeetDict().keySet().toString()
+		// : "");
+		Utils.pl("JunctionMode: " + j != null ? j.toString() : "");
 		Utils.pl("Symbols File: " + (symbols != null ? symbols.getAbsolutePath() : ""));
 		Utils.pl("Blocks Directory: " + (blocks != null ? blocks.getAbsolutePath() : ""));
 		Utils.pl("Cardinality: " + cardinality);
@@ -271,7 +346,7 @@ public class Launcher {
 			test = ask4Test(in);
 			in.close();
 
-			launch(cardinality, ul, j, test, sym, lista);
+			launch(cardinality, ul, j, test, sym, leetDict, lista);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (in != null) {
@@ -282,9 +357,17 @@ public class Launcher {
 	}
 
 	private void launch(int cardinality, UpLowMode ulMode, JunctionMode jMode, String test, Set<String> sym,
-			List<List<String>> lista) {
+			Leet leetDict, List<List<String>> lista) {
 
-		shuffler = new Shuffler(sym);
+		if (leetDict != null && !leetDict.isValid()) {
+			leetDict = null;
+		}
+
+		shuffler = new Shuffler(sym, leetDict);
+		if (preprocessors != null && !preprocessors.isEmpty()) {
+			Preprocessor preproc = new Preprocessor(preprocessors);
+			lista.addAll(preproc.getExtraLists());
+		}
 
 		switch (cardinality) {
 		case 1: {

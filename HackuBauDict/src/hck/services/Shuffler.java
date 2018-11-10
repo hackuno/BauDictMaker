@@ -9,6 +9,7 @@ import org.junit.platform.commons.util.StringUtils;
 
 import hck.enums.JunctionMode;
 import hck.enums.UpLowMode;
+import obj.Leet;
 
 public class Shuffler {
 
@@ -25,6 +26,12 @@ public class Shuffler {
 	public Shuffler(Set<String> symbols) {
 		sym = symbols;
 		sym.add("");
+	}
+
+	public Shuffler(Set<String> symbols, Leet leetDict) {
+		sym = symbols;
+		sym.add("");
+		m = new Metamorpher(leetDict);
 	}
 
 	public Shuffler() {

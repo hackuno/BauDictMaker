@@ -6,8 +6,13 @@ import java.util.stream.Stream;
 import hck.enums.JunctionMode;
 
 public class Junction {
+	
+	Integer addMonths=null;
 
 	public Junction() {
+	}
+	
+	public Junction(Boolean addMonths) {
 	}
 
 	public static Stream<String> junction(JunctionMode jmode, Set<String> sym, String p1) {

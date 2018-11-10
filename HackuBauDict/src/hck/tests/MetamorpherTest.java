@@ -2,8 +2,7 @@ package hck.tests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,21 +12,31 @@ import org.junit.runner.RunWith;
 import hck.enums.UpLowMode;
 import hck.services.Metamorpher;
 import hck.utils.Utils;
+import obj.Leet;
 
 @RunWith(JUnitPlatform.class)
 class MetamorpherTest {
 
 	public static Metamorpher m;
+	public static Leet leetDict = null;
 
 	@BeforeAll
 	public static void setup() {
-		m = new Metamorpher();
+		leetDict = new Leet("a=4;b=3,8;");
+		m = new Metamorpher(leetDict);
+	}
+
+	@Test
+	void leet() {
+		Utils.pl("ATTENTION: LEET TEST NEED TO BE WRITE CORRECTLY");
+		m.upperLower("bau", UpLowMode.ALL_COMBO).forEach(Utils::pl);
+		Utils.pl("ATTENTION: LEET TEST NEED TO BE WRITE CORRECTLY");
 	}
 
 	@Test
 	void upperLower() {
 		Utils.plTs("UpperLower test - init ");
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<>();
 		out.add("abcd");
 		out.add("abcD");
 		out.add("abCd");

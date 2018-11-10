@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class JunctionTest {
 	@Test
 	void ALL_JUNCTION__2w() {
 		Utils.plTs("Junction test ALL_JUNCTION 2W - init ");
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<>();
 		out.add("%casa%bau%");
 		out.add("%casa%bau_");
 		out.add("_casa%bau%");
@@ -49,7 +50,7 @@ class JunctionTest {
 	@Test
 	void ALL_JUNCTION__3w() {
 		Utils.plTs("Junction test ALL_JUNCTION 3W - init ");
-		Set<String> out = new HashSet<String>();
+		ConcurrentSkipListSet<String> out = new ConcurrentSkipListSet<>();
 		out.add("_casa%bau%miao%");
 		out.add("_casa%bau%miao_");
 		out.add("%casa%bau%miao%");
