@@ -21,7 +21,9 @@ public class PropertiesLoader {
 	private static final String NIX_ETC = slash + "etc" + slash + "hck_default.properties";
 	private static final String NIX_USR_ETC = slash + "usr" + slash + "etc" + slash + "hck_default.properties";
 
-	public static Properties load() {
+	private File loaded = null;
+
+	public Properties load() {
 		Properties prop = null;
 		InputStream input = null;
 		Path path = getInstallationPath();
@@ -32,33 +34,33 @@ public class PropertiesLoader {
 			try {
 
 				System.out.print("Serching default properties in: " + CFG_PATH_PRIMARY);
-				File f = new File(CFG_PATH_PRIMARY);
-				System.out.println(" (" + f.getAbsolutePath() + ")");
-				if (f.exists()) {
-					System.out.println("Loading default properties from: " + f.getAbsolutePath());
+				loaded = new File(CFG_PATH_PRIMARY);
+				System.out.println(" (" + loaded.getAbsolutePath() + ")");
+				if (loaded.exists()) {
+					System.out.println("Loading default properties from: " + loaded.getAbsolutePath());
 					prop = new Properties();
-					input = new FileInputStream(f);
+					input = new FileInputStream(loaded);
 					prop.load(input);
 					System.out.println("loaded");
 				} else {
 					System.out.println("Not found");
 					System.out.println("Serching default properties in: " + path + CFG_PATH);
-					f = new File(path + CFG_PATH);
-					if (f.exists()) {
+					loaded = new File(path + CFG_PATH);
+					if (loaded.exists()) {
 						System.out.println("Loading default properties from:" + path + CFG_PATH);
 						prop = new Properties();
-						input = new FileInputStream(f);
+						input = new FileInputStream(loaded);
 						prop.load(input);
 						System.out.println("loaded");
 					} else {
 						System.out.println("Not found");
 						for (String p : others) {
 							System.out.println("Serching default properties in: " + p);
-							f = new File(p);
-							if (f.exists()) {
+							loaded = new File(p);
+							if (loaded.exists()) {
 								System.out.println("Loading default properties from:" + p);
 								prop = new Properties();
-								input = new FileInputStream(f);
+								input = new FileInputStream(loaded);
 								prop.load(input);
 								System.out.println("loaded");
 							} else {
@@ -96,6 +98,14 @@ public class PropertiesLoader {
 			System.out.println("Can't find properties path.");
 		}
 		return path;
+	}
+
+	public File getLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(File loaded) {
+		this.loaded = loaded;
 	}
 
 }

@@ -1,8 +1,10 @@
 package hck;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +27,7 @@ import obj.Leet;
 
 public class Launcher {
 
+	private PropertiesLoader propLoader;
 	private Shuffler shuffler = null;
 	private Lang loc = Lang.IT;
 	private Properties props = null;
@@ -41,7 +44,7 @@ public class Launcher {
 
 	public void launch(String[] args) {
 
-		loadDefaultProperties();
+		loadDefaultProperties(false);
 
 		if (args.length == 0) {
 			UI.MANUAL.print(loc);
@@ -62,6 +65,32 @@ public class Launcher {
 				newbyMode();
 			} else if (args[0].equals("bau")) {
 				cmd(args);
+			} else if (args[0].equals("show")) {
+				loadDefaultProperties(true);
+				if (propLoader.getLoaded() != null) {
+					Utils.pl("Property loaded from:" + propLoader.getLoaded().getAbsolutePath());
+				}
+
+			} else if (args[0].equals("cfg")) {
+				loadDefaultProperties(true);
+				if (propLoader.getLoaded() != null) {
+					Utils.pl("Opening: " + propLoader.getLoaded().getAbsolutePath());
+
+					try {
+						if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+							String cmd = "rundll32 url.dll,FileProtocolHandler "
+									+ propLoader.getLoaded().getCanonicalPath();
+							Runtime.getRuntime().exec(cmd);
+						} else {
+							Desktop.getDesktop().edit(propLoader.getLoaded());
+						}
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+
 			}
 		}
 
@@ -69,6 +98,7 @@ public class Launcher {
 
 	private void cmd(String[] args) {
 
+		loadDefaultProperties(true);
 		initArgs(args);
 
 		if (lista.isEmpty()) {
@@ -79,8 +109,9 @@ public class Launcher {
 		launch(cardinality, ul, j, test, sym, leetDict, lista);
 	}
 
-	private void loadDefaultProperties() {
-		props = PropertiesLoader.load();
+	private void loadDefaultProperties(boolean printPar) {
+		propLoader = new PropertiesLoader();
+		props = propLoader.load();
 		lista = new ArrayList<>();
 		ul = UpLowMode.NONE;
 		j = JunctionMode.NONE;
@@ -189,6 +220,10 @@ public class Launcher {
 			}
 		}
 
+		if (printPar) {
+			Utils.pl("\n\nProperty loaded parameters:");
+			printParams();
+		}
 	}
 
 	private void initArgs(String[] args) {
@@ -251,7 +286,8 @@ public class Launcher {
 							test = cmd[1];
 							break;
 						}
-						default:break;
+						default:
+							break;
 						}
 					} catch (Exception ee) {
 
@@ -304,17 +340,29 @@ public class Launcher {
 			Utils.pl("Leet dictionary not builded");
 			leetDict = null;
 		}
+		printParams();
 
-		Utils.pl("\n");
-		Utils.pl("Lang: " + loc != null ? loc.toString() : "");
-		Utils.pl("UplowMode: " + ul != null ? ul.toString() : "");
-		// Utils.pl("Preprocessors: " + preprocessors != null ? preprocessors.toString()
-		// : "");
-		Utils.pl("Leet: " );
-		// Utils.pl("LeetDcit: " + leetDict != null && leetDict.isValid() ?
-		// leetDict.getLeetDict().keySet().toString()
-		// : "");
-		Utils.pl("JunctionMode: " + j != null ? j.toString() : "");
+	}
+
+	private void printParams() {
+
+		Utils.pl("");
+		Utils.pl("Lang: " + (loc != null ? loc.toString() : ""));
+		Utils.pl("UplowMode: " + (ul != null ? ul.toString() : ""));
+		Utils.pl("Preprocessors: ");
+		if (preprocessors != null) {
+			for (PreprocessorAdds p : preprocessors) {
+				Utils.pl(p.toString());
+			}
+		}
+		Utils.pl("Leet dictionary: ");
+		if (leetDict != null && leetDict.isValid()) {
+			for (List<String> d : leetDict.getLeetDict().values()) {
+				Utils.pl(d.toString());
+			}
+		}
+
+		Utils.pl("JunctionMode: " + (j != null ? j.toString() : ""));
 		Utils.pl("Symbols File: " + (symbols != null ? symbols.getAbsolutePath() : ""));
 		Utils.pl("Blocks Directory: " + (blocks != null ? blocks.getAbsolutePath() : ""));
 		Utils.pl("Cardinality: " + cardinality);
